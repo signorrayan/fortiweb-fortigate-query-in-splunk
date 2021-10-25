@@ -1,1 +1,1 @@
-index=fortiweb type=traffic (http_retcode=500 OR http_retcode=502 OR http_retcode=503) | timechart span=5m count by http_host
+ index=fortiweb type=traffic (http_retcode=500 OR http_retcode=502 OR http_retcode=503) | timechart span=5m count by http_host
