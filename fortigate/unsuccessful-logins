@@ -11,7 +11,7 @@
 
 
 <query>
-( index=fortigate sourcetype=fgt_event user!="N/A" user!="unknown" (logdesc="Authentication failed" OR logdesc="Authentication logon" OR logdesc="SSL VPN login fail") )
+( index=fortigate type=event NOT user IN ("N/A", "unknown") logdesc IN ("Authentication failed", "Authentication logon", "SSL VPN login fail") )
   | bin _time span=1h
   | stats count(eval(logdesc="Authentication failed" OR logdesc="SSL VPN login fail")) AS Failed_attempts count(eval(logdesc="Authentication logon")) AS Successful_logins VALUES(src) AS SourceIP VALUES(logdesc) AS Description by user _time
   | where Failed_attempts &gt; 0
