@@ -1,0 +1,4 @@
+#This query detects server side errors (such as bad-gateway, service-unavailable, gateway-timeout  in each host 
+ 
+index=fortiweb type=traffic http_retcode IN (500, 502, 503)
+| timechart span=5m count by http_host
