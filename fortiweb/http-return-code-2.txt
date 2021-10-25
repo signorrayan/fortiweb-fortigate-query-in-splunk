@@ -1,0 +1,1 @@
+index=fortiweb type=traffic http_retcode IN (200,204) | timechart span=5m dc(msg_id) as cnt by http_retcode
