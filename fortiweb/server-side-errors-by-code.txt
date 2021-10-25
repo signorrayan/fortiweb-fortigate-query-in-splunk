@@ -1,0 +1,1 @@
+index=fortiweb sourcetype=fwb_traffic (http_retcode=500 OR http_retcode=502 OR http_retcode=503 OR http_retcode=504) | bin _time span=5m | stats count as cnt by http_retcode _time
