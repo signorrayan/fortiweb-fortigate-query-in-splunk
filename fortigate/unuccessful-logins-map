@@ -1,0 +1,7 @@
+index=fortigate type=event (user=* AND user!="N/A") (src=* OR dest=*) action=failure
+| stats count by user, src, dest
+| eval source&amp;destination=mvappend(src,dest) 
+| eventstats dc(source&amp;destination) AS host_count by user 
+| where host_count &gt;= 1 
+| sort - host_count 
+| table source&amp;destination, user
