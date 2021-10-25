@@ -1,0 +1,3 @@
+# HTTP-TotalTraffic - every 10 min
+
+index=fortiweb  type=traffic |bin _time span=10m | stats count AS cnt by _time | eval cnt=sum(cnt) |sort -_time
