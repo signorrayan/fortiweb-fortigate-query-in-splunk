@@ -1,0 +1,1 @@
+index=fortigate type=event (subtype=system OR subtype=router OR subtype=wad OR subtype=ha) | timechart span=5m avg(totalsession) by devname
