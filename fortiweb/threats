@@ -1,0 +1,4 @@
+index=fortiweb type=attack attack_type=*
+| stats count as "Threat Count" first(threat_level) as "Threat Level" sum(threat_weight) as "Threat Score" count(eval(action="Alert")) as "Action Alert" count(eval(action="Alert_Deny")) as "Action Deny"  count(eval(action="Period_Block")) as "Action Block" BY attack_type
+| sort "Threat Level"
+| rename attack_type as Threat
