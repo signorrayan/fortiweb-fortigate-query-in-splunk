@@ -1,0 +1,8 @@
+index=fortiweb http_retcode=200
+| bin _time span=10m
+| stats count as cnt latest(_time) AS LastTime by original_src http_host _time
+| sort -cnt
+| rename original_src as src
+| convert ctime(LastTime) AS LastTime
+| head 20
+| table LastTime, src, http_host, cnt
