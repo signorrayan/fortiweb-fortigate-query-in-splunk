@@ -1,0 +1,6 @@
+index=fortiweb type=attack NOT src IN (10.0.0.0/8, 192.168.0.0/16) srccountry!=Iran
+| stats count(eval(action="Alert" OR action="allowed")) AS ActionAllow  count(eval(action="Alert_Deny")) AS ActionDeny  count(eval(action="Period_Block")) AS ActionPeriodBlock VALUES(http_host) as DestHosts by src
+| eval SumActions = (ActionAllow + ActionDeny + ActionPeriodBlock)
+| where ActionAllow&gt;0
+| sort -SumActions
+| fields - SumActions
