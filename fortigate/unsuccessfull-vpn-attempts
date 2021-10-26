@@ -1,0 +1,4 @@
+index=fortigate type=event action=failure  user="N/A"
+| stats dc(cookies) AS Attempts MAX(_time) AS LastTime VALUES(msg) AS Description by remip subtype  | rename remip as sourceIP  subtype AS SubType| sort - Attempts
+| convert ctime(LastTime) as LastTime
+| table LastTime sourceIP SubType Attempts Description
