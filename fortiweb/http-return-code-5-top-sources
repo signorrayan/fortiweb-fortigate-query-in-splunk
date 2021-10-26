@@ -1,0 +1,7 @@
+index=fortiweb type=traffic http_url=* http_retcode IN (500, 502, 503) 
+| stats latest(_time) as LastTime last(_time) AS FirstTime dc(http_url) AS "Distinct URL" count by original_src 
+| convert ctime(LastTime) AS LastTime ctime(FirstTime) AS FirstTime
+| sort -"Distinct URL"
+| rename original_src as src
+| head 20
+| table FirstTime LastTime src "Distinct URL" count
