@@ -14,14 +14,14 @@
 ( index=fortigate type=event NOT user IN ("N/A", "unknown") logdesc IN ("Authentication failed", "Authentication logon", "SSL VPN login fail") )
   | bin _time span=1h
   | stats count(eval(logdesc="Authentication failed" OR logdesc="SSL VPN login fail")) AS Failed_attempts count(eval(logdesc="Authentication logon")) AS Successful_logins VALUES(src) AS SourceIP VALUES(logdesc) AS Description by user _time
-  | where Failed_attempts &gt; 0
+  | where Failed_attempts > 0
   | rename user AS Username
   | eval typerec="splunk"
   | append [| inputlookup userlist | stats count by user | rename user AS Username | eval typerec="lookup"]
   | stats VALUES(_time) AS NTime VALUES(Failed_attempts) AS Failed_attempts VALUES(SourceIP) AS SourceIP VALUES(typerec) AS Typerecs VALUES(Successful_logins) AS Successful_logins VALUES(Description) AS Description by Username
   | where ((mvcount(Typerecs)==2 OR Typerecs=="splunk"))
   | eval Typerecs = if((mvcount(Typerecs)==1 AND Typerecs=="splunk"), "Unauthorized", "Authorized User")
-  | where (Typerecs=="Unauthorized" AND Successful_logins&gt;=0) OR (Typerecs=="Authorized User" AND Failed_attempts&gt;=5)
+  | where (Typerecs=="Unauthorized" AND Successful_logins>=0) OR (Typerecs=="Authorized User" AND Failed_attempts>=5)
   | convert ctime(NTime) as Time
   | sort -Failed_attempts
   | table Time, Username, Failed_attempts,Successful_logins, Typerecs, SourceIP, Description
