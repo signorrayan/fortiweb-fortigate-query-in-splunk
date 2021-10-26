@@ -1,0 +1,7 @@
+index=fortigate type=event user!="N/A" logdesc="Authentication success"
+| stats count latest(_time) AS LastLogin by user
+| eval days_ago=tostring(now()-LastLogin,"duration")
+| sort - days_ago
+| convert ctime(LastLogin) AS LastLogin
+| rename days_ago AS "last succesful login"
+| table LastLogin, user, count, "last succesful login"
