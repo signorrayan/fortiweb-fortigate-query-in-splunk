@@ -1,4 +1,4 @@
-This directory contains fortigate queries.\
+This directory contains fortigate queries.
 
 Some screenshots of queries:
 
