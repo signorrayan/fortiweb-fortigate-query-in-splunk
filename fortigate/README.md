@@ -1,5 +1,18 @@
-This directory contains fortigate queries.
+This directory contains fortigate queries.\
 
-- ### Unsuccessful logins
+Some screenshots of queries:
 
-![demo](https://github.com/signorrayan/fortiweb-fortigate-query-in-splunk/blob/master/pic/unsuccessful-logins.png)
+- ##### Unsuccessful logins
+
+![demo](../pic/unsuccessful-logins.png)
+
+- ##### Cpu/Memory
+
+![demo](../pic/cpu-memory.png)
+
+- ##### Total sessions
+
+![demo](../pic/total-sessions.png)
+
+
+
