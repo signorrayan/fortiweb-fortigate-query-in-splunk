@@ -6,6 +6,10 @@ Some screenshots of queries:
 
 ![demo](../pic/unsuccessful-logins.png)
 
+- ##### User Total Transferred
+
+![demo](../pic/user-total-transferred.PNG)
+
 - ##### Cpu/Memory
 
 ![demo](../pic/cpu-memory.png)
