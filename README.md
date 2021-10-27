@@ -3,3 +3,7 @@ This repository contains splunk queries and vizualization for both fortiweb and 
 
 
 Queries and screenshots of each asset is placed in their directory.
+
+
+
+![demo](pic/dashboard.PNG)
