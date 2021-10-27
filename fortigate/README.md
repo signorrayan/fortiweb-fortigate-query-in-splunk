@@ -6,7 +6,7 @@ Some screenshots of queries:
 
 ![demo](../pic/unsuccessful-logins.png)
 
-- ##### User Total Transferred
+- ##### User Total Transferred (to detect data exfiltration)
 
 ![demo](../pic/user-total-transferred.PNG)
 
