@@ -1,0 +1,3 @@
+# Detect UDP Flood attack 
+
+index=fortigate type=traffic app="udp/*" | timechart span=2m count
