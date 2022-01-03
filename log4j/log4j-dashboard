@@ -1,0 +1,101 @@
+<dashboard theme="dark">
+  <label>Log4j</label>
+  <row>
+    <panel>
+      <title>JNDI Probes with DNS Queries</title>
+      <table>
+        <search>
+          <query>index=*  jndi
+| rex field=_raw max_match=0 "[jJnNdDiI]{4}(\:|\%3A|\/|\%2F)(?&lt;proto&gt;\w+)(\:\/\/|\%3A\%2F\%2F)(\$$\{.*?\}(\.)?)?(?&lt;rce_dest&gt;[a-zA-Z0-9\.\-\_\$$\{\:]+)"
+| mvexpand rce_dest
+| rex field=rce_dest "(?&lt;rce_ip&gt;\d+\.\d+\.\d+\.\d+)"
+| eval rce_domain = case(isnull(rce_ip),rce_dest)
+| rex field=rce_domain "(?&lt;top_level_domain&gt;[0-9a-zA-A\-]+\.[0-9a-zA-A\-]+$$)"
+| dedup top_level_domain
+| eval top_level_domain = "*.".top_level_domain
+| where top_level_domain!=""
+| lookup log4j_scanning_domain.csv query as top_level_domain OUTPUT query AS old_query
+| where isnull(old_query)
+| rename top_level_domain as query
+| table _time query src</query>
+          <earliest>-7d</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+          <refresh>10m</refresh>
+          <refreshType>delay</refreshType>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Log4j Attempts</title>
+      <table>
+        <search>
+          <query>(index=fortiweb OR index=fortigate) "${jndi:*" Base64
+| eval _time_UTC = _time - (strptime("1997-12-21 +00:00", "%F %:z") - strptime("1997-12-21 " . strftime(_time,"%:z"), "%F %Z"))
+| eval time_in_UTC = strftime(_time_UTC, "%F %T UTC")
+| rex field=_raw "[jJnNdDiI]{4}(\:|\%3A|\/|\%2F)(?&lt;proto&gt;\w+)(\:\/\/|\%3A\%2F\%2F)($$\{.*?\}(\.)?)?(?&lt;rce_dest&gt;[a-zA-Z0-9\.\-\_$$\{\:]+)"
+| rex field=_raw "\/Base64\/(?&lt;string&gt;\S+)}"
+| eval response = mvappend(action, http_retcode)
+| table time_in_UTC proto rce_dest string sourcetype response</query>
+          <earliest>-24h@h</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Outbond Traffic</title>
+      <table>
+        <search>
+          <query>index=fortigate app!="HTTPS.BROWSER" app!="DHCP/DHCP Relay" app!="PING" action=allowed srcip=* dstip=* 
+    (dstip!=10.0.0.0/8 dstip!=172.16.0.0/12 dstip!=192.168.0.0/16 dstip!=100.64.0.0/10 dstip!=8.8.8.8 dstip!=4.2.2.4 dstip!=8.8.4.4)
+| stats
+    earliest(_time) as earliest 
+    latest(_time) as latest 
+    values(action) as action 
+    values(app) as app 
+    values(dest_port) as dest_port 
+    values(sourcetype) as sourcetype count 
+    by srcip dstip 
+| eventstats max(latest) as maxlatest
+    ```This is 2021-12-09 00:00:00``` 
+    ``` 
+| eval comparisonTime="-1d@d" ``` 
+| eval isOutlier=if(earliest &gt;= relative_time(maxlatest, comparisonTime), 1, 0) 
+| convert timeformat="%Y-%m-%d %H:%M:%S" ctime(earliest),ctime(latest) ,ctime(maxlatest)</query>
+          <earliest>-4h@m</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>
