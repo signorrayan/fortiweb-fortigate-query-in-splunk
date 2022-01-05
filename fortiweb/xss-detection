@@ -1,0 +1,7 @@
+index=fortiweb type=traffic ("<script>" OR "%3Cscript%3E") 
+| stats count as "Count" latest(_time) as Time by original_src http_method http_retcode http_host http_url http_refer http_response_bytes 
+| eval http_refer = if (http_refer="none", "", http_refer) 
+| rename original_src AS SourceIP http_method AS Method http_retcode AS ReturnCode http_host AS HTTP_Host http_url AS HTTP_URL http_refer AS HTTP_Refer http_response_bytes AS ResponseBytes 
+| convert ctime(Time) AS Time 
+| sort -Time 
+| table Time SourceIP Method ReturnCode HTTP_Host HTTP_URL HTTP_Refer ResponseBytes "Count"
