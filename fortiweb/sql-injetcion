@@ -1,4 +1,4 @@
-index=fortiweb sourcetype=fwb_traffic (("select" AND NOT http_url in ("select.php", "/select")) OR (SELECT*FROM*) OR "union" OR ("concat" AND NOT "resumable-concat") OR "CASE*WHEN" )  AND NOT http_refer IN ("*mysql-overview*") AND NOT http_url IN ("*.js") original_src!="217.11.23.195"
+index=fortiweb sourcetype=fwb_traffic (("select" AND NOT http_url in ("select.php", "/select")) OR (SELECT*FROM*) OR "union" OR ("concat" AND NOT "resumable-concat") OR "CASE*WHEN" )  AND NOT http_refer IN ("*mysql-overview*") AND NOT http_url IN ("*.js")
 | stats count as "Count" latest(_time) as Time by original_src http_method http_retcode http_host http_url http_refer http_response_bytes
 | rename original_src AS SourceIP http_method AS Method http_retcode AS ReturnCode http_host AS HTTP_Host http_url AS HTTP_URL http_refer AS HTTP_Refer http_response_bytes AS ResponseBytes
 | convert ctime(Time) AS Time
